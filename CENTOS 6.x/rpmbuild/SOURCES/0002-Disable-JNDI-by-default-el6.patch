@@ -1,0 +1,38 @@
+--- logging-log4j-1.2.14.orig/src/java/org/apache/log4j/net/JMSAppender.java	2006-09-14 09:04:25.000000000 +0200
++++ logging-log4j-1.2.14/src/java/org/apache/log4j/net/JMSAppender.java	2022-01-25 13:21:23.541323902 +0100
+@@ -99,6 +99,7 @@ import javax.naming.NamingException;
+    @author Ceki G&uuml;lc&uuml; */
+ public class JMSAppender extends AppenderSkeleton {
+ 
++  boolean enabled;
+   String securityPrincipalName;
+   String securityCredentials;
+   String initialContextFactoryName;
+@@ -118,6 +119,16 @@ public class JMSAppender extends Appende
+   JMSAppender() {
+   }
+ 
++  public
++  void setEnabled(boolean enabled) {
++    this.enabled = enabled;
++  }
++
++  public
++  boolean getEnabled() {
++    return enabled;
++  }
++
+   /**
+      The <b>TopicConnectionFactoryBindingName</b> option takes a
+      string value. Its value will be used to lookup the appropriate
+@@ -168,6 +179,10 @@ public class JMSAppender extends Appende
+    *  Options are activated and become effective only after calling
+    *  this method.*/
+   public void activateOptions() {
++    if (!enabled) {
++      throw new IllegalStateException("JMS appender is disabled by default and must be enabled by setting Enabled=true property of the appender");
++    }
++
+     TopicConnectionFactory  topicConnectionFactory;
+ 
+     try {
